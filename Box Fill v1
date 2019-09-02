@@ -1,0 +1,111 @@
+/**
+    Author:             Victoria
+    Title:              Box Completely Filled?
+    Date Created:       09/01/2019
+    Date Last Modified: 09/02/2019
+    File Name:          main.cpp
+    File Description:   Contains the function for checking
+                        whether the box is full as well as
+                        int main.
+
+    Challenge:          https://edabit.com/challenge/jpDMdyDiB22TrQAsC
+    Listed Difficulty:  Hard
+
+    Algorithm:          Int main reads in a box line by line
+                        and adds it to a string, which is
+                        passed to CompletelyFilled. The
+                        width of the top border of the box
+                        is also passed to CompletelyFilled.
+                        CompletelyFilled uses a stringstream
+                        and .get() to read the box character
+                        by character, and return whether the
+                        box is filled.
+
+    Assumptions:        It is assumed that the user will enter
+                        the box line by line.
+                        It is assumed that the box will consist
+                        of # for the border, and * for the
+                        filler.
+*/
+
+#include <iostream>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+bool CompletelyFilled(const string&, int);
+
+int main(){
+    string      box,    // User-inputted box
+                line,   // One line of the box
+                border; // Top and bottom borders
+    char        quitKey;
+    int         width;  // Width of the box
+
+    do {
+        cout << "Input a box: " << endl;
+        //  Taking in the top border.
+        getline(cin, line, '\n');
+
+        border = line;
+
+        box = line;
+
+        width = border.size();
+
+        getline(cin, line, '\n');
+
+        while (line != border){
+            box += line;
+            getline(cin, line, '\n');
+        }
+
+        //  Displaying the results of whether the box is filled.
+        if (CompletelyFilled(box, width))
+            cout << endl << "The box is filled." << endl;
+        else
+            cout << endl << "The box is not filled." << endl;
+
+        //  Prompting the user for quit key.
+        cout << "Quit? (y/n)" << endl;
+        cin >> quitKey;
+
+    } while (quitKey != 'y' && quitKey != 'Y');
+
+    return 0;
+}
+
+bool CompletelyFilled(const string &box, int width){
+    bool    filled = true;
+    int     astrCnt = 0, // Asterisk counter
+            brdr    = 0; // Finds the bottom border
+    char    data;        // Each character of the box
+
+    //  Using a stream to parse the string.
+    stringstream    parse;
+    parse.str(box);
+
+    //  Reading the box.
+    while (parse.get(data)){
+        //  Reading one line.
+        for (int i = 0; i < width; i++){
+            if (data == '*')
+                astrCnt++;
+
+            if (data == '#')
+                brdr++;
+
+            parse.get(data);
+        }
+
+        //  Determining if the row is filled.
+        if (astrCnt != width - 2 && brdr < 3)
+            filled = false;
+
+        astrCnt = 0;
+        brdr = 0;
+    }
+
+    return filled;
+}
